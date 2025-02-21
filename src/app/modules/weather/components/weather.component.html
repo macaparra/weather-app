@@ -1,0 +1,85 @@
+<div class="flex flex-col min-h-screen">
+  <nav class="bg-[#1f1f1f] text-white p-4">
+    <div class="container mx-auto flex items-center">
+      <i class="fas fa-sun text-2xl mr-2 text-yellow-400"></i>
+      <h1 class="text-2xl font-bold">ElClimaHoy</h1>
+    </div>
+  </nav>
+  <div class="flex flex-wrap p-6 bg-[#f7f7f7] flex-grow justify-center">
+    <div class="bg-white p-6 rounded-2xl shadow-lg w-full sm:w-1/3 mb-6 sm:mr-6">
+      <h1 class="text-3xl font-bold text-center mb-6 text-[#1D1D1F]">Buscar</h1>
+
+      <div class="relative mb-6">
+        <input
+          type="text"
+          [(ngModel)]="city"
+          (input)="onCityInput()"
+          (keyup.enter)="searchWeather()"
+          placeholder="Ingresa Nombre de la Ciudad"
+          class="w-full p-4 border-2 border-[#B8B8B8] rounded-xl focus:ring-2 focus:ring-[#007aff] transition duration-200"
+        />
+
+        <ul *ngIf="suggestions.length" class="absolute bg-white border w-full mt-1 rounded-lg shadow-lg z-10">
+          <li
+            *ngFor="let suggestion of suggestions"
+            (click)="selectSuggestion(suggestion)"
+            class="p-3 hover:bg-[#F0F0F5] cursor-pointer transition-colors"
+          >
+            {{ suggestion }}
+          </li>
+        </ul>
+      </div>
+
+      <button
+        (click)="searchWeather()"
+        class="w-full bg-yellow-500 text-white p-4 mt-4 rounded-xl hover:bg-orange-400 transition duration-200"
+      >
+        Buscar
+      </button>
+
+      <p *ngIf="errorMessage" class="text-red-500 text-sm mt-2 text-center">{{ errorMessage }}</p>
+
+      <div *ngIf="weatherData" class="mt-6 text-right">
+        <div class="flex justify-end items-center space-x-3 mt-4">
+          <h2 class="text-xl font-semibold text-[#1D1D1F]">{{ weatherData.location.name }}, {{ weatherData.location.country }}</h2>
+          <div
+            (click)="toggleFavorite()"
+            class="cursor-pointer text-lg transition duration-200"
+            [ngClass]="{
+              'text-yellow-500': isFavorite(),
+              'text-[#B8B8B8]': !isFavorite()
+            }"
+          >
+            <i class="fas fa-star"></i>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-end">
+          <img [src]="weatherData.current.condition.icon" alt="Weather icon" class="w-12 h-12">
+          <p class="text-lg text-[#007aff]">
+            {{ weatherData.current.temp_c }} °C - 
+            {{ weatherData.current.temp_f }} °F
+          </p>
+        </div>
+        
+        <p class="text-lg text-[#595959]">Vientos: {{ weatherData.current.wind_kph }} km/h - Humedad: {{ weatherData.current.humidity }}%</p>
+        <p class="text-lg text-[#1D1D1F]">Hora: {{ weatherData.location.localtime | date:'hh:mm a' }}</p>
+      </div>
+    </div>
+
+    <div class="bg-white p-6 rounded-2xl shadow-lg w-full sm:w-1/3 mb-6 sm:mr-6">
+      <h3 class="text-lg font-semibold mb-4 text-center text-[#1D1D1F]">Favoritos</h3>
+    
+      <div *ngIf="favorites.length === 0" class="text-center text-gray-500">
+        <p>No hay ciudades agregadas a favoritos.</p>
+      </div>
+    
+      <app-favorite [favorites]="favorites" (favoritesChange)="updateFavorites($event)"></app-favorite>
+    </div>
+
+    <div class="bg-white p-6 rounded-2xl shadow-lg w-full sm:w-1/2">
+      <h3 class="text-lg font-semibold mb-4 text-center text-[#1D1D1F]">Historial</h3>
+      <app-history (citySelected)="onCitySelected($event)"></app-history>
+    </div>
+  </div>
+</div>

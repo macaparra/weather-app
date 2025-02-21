@@ -1,0 +1,37 @@
+<div *ngIf="favoritesLoaded" class="mt-6">
+    <div class="overflow-x-auto">
+      <table class="min-w-full table-auto border-collapse rounded-lg overflow-hidden">
+        <thead>
+          <tr class="bg-[#1f1f1f] text-white">
+            <th class="px-6 py-3 text-left font-semibold">Ciudad</th>
+            <th class="px-6 py-3 text-left font-semibold">Temperatura</th>
+            <th class="px-6 py-3 text-left font-semibold">Estado</th>
+            <th class="px-6 py-3 text-left font-semibold">Hora Local</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of searchHistory | paginate:currentPage:pageSize" 
+              (click)="selectFromHistory(item.city)" 
+              class="hover:bg-orange-100 transition-all cursor-pointer">
+            <td class="px-6 py-3 text-lg text-gray-700">{{ item.city }}</td>
+            <td class="px-6 py-3 text-lg text-yellow-500">{{ item.temperature }}</td>
+            <td class="px-6 py-3 text-lg">{{ item.condition }}</td>
+            <td class="px-6 py-3 text-lg">{{ item.localTime | date:'HH:mm a' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  
+    <div class="flex justify-center mt-4" *ngIf="totalPages() > 1">
+      <button (click)="previousPage()" [disabled]="currentPage === 1" 
+              class="px-4 py-2 bg-gray-500 text-white rounded-lg disabled:opacity-50">
+        Anterior
+      </button>
+      <span class="mx-4 text-lg">Página {{ currentPage }} de {{ totalPages() }}</span>
+      <button (click)="nextPage()" [disabled]="currentPage === totalPages()" 
+              class="px-4 py-2 bg-gray-500 text-white rounded-lg disabled:opacity-50">
+        Siguiente
+      </button>
+    </div>
+  </div>
+  
